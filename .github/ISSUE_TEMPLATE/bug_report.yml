@@ -1,0 +1,44 @@
+# Copyright (c) 2026 Lights Out. All rights reserved. Alle Rechte vorbehalten. No licence is granted; see LICENSE.
+
+name: Bug report
+description: Something in Lights Out does not work or looks wrong
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for the report. Issues are public, so please leave out names, phone numbers, email addresses and photos of people.
+        To report a faulty light or signal, use the app at https://lightsout.org.za. For a security problem, use private reporting.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you see, and what did you expect instead?
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where did it happen
+      options:
+        - Report form
+        - Map
+        - About page
+        - Somewhere else
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to repeat it
+      description: What did you tap or type before it happened?
+  - type: input
+    id: device
+    attributes:
+      label: Phone or computer and browser
+      description: For example, iPhone with Safari, or Windows with Firefox.
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: A screenshot is welcome if it shows no personal information. If the app showed an error number, add it here.

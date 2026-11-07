@@ -1,0 +1,10 @@
+# Copyright (c) 2026 Lights Out. All rights reserved. Alle Rechte vorbehalten. No licence is granted; see LICENSE.
+
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security problem privately
+    url: https://github.com/Chester-xx/lights-out/security/advisories/new
+    about: Do not post security problems as public issues. Use private reporting instead.
+  - name: Report a faulty light or signal
+    url: https://lightsout.org.za
+    about: Faults are reported in the app, not here.

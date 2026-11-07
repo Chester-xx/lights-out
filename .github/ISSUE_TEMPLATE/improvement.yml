@@ -1,0 +1,28 @@
+# Copyright (c) 2026 Lights Out. All rights reserved. Alle Rechte vorbehalten. No licence is granted; see LICENSE.
+
+name: Improvement
+description: An idea that would make Lights Out better
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for the idea. Issues are public, so please leave out names, phone numbers, email addresses and photos of people.
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: What would you like Lights Out to do?
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem it solves
+      description: Why would this help you or other people?
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
