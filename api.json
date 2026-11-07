@@ -1,6 +1,6 @@
 {
-  "color": "red",
+  "color": "brightgreen",
   "label": "API",
-  "message": "down",
+  "message": "up",
   "schemaVersion": 1
 }

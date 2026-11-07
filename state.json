@@ -1,15 +1,15 @@
 {
   "api": {
-    "fails": 2,
-    "up": false
+    "fails": 0,
+    "up": true
   },
   "cloudflare": {
     "fails": 0,
     "up": true
   },
   "database": {
-    "fails": 2,
-    "up": false
+    "fails": 0,
+    "up": true
   },
   "frontend": {
     "fails": 0,

@@ -1,6 +1,6 @@
 {
-  "color": "red",
+  "color": "brightgreen",
   "label": "Database",
-  "message": "down",
+  "message": "up",
   "schemaVersion": 1
 }
