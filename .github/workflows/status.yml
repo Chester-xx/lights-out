@@ -1,0 +1,135 @@
+# Copyright (c) 2026 Lights Out. All rights reserved. Alle Rechte vorbehalten. No licence is granted; see LICENSE.
+
+name: Status
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: status
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check services and publish badges
+        env:
+          API_URL: ${{ vars.API_URL }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Work on the status branch, creating it the first time
+          if git ls-remote --exit-code --heads origin status >/dev/null 2>&1; then
+            git fetch --depth=1 origin status
+            git checkout -B status FETCH_HEAD
+          else
+            git checkout --orphan status
+            git rm -rf . >/dev/null
+          fi
+
+          cat > /tmp/check.py <<'PY'
+          import json, os, sys, urllib.error, urllib.request
+
+          API = os.environ.get('API_URL', '').rstrip('/')
+          FRONTEND = os.environ.get('FRONTEND_URL', 'https://lightsout.org.za')
+          CLOUDFLARE = os.environ.get('CLOUDFLARE_URL', 'https://challenges.cloudflare.com/turnstile/v0/api.js')
+          OUT = os.environ.get('STATUS_DIR', '.')
+          TIMEOUT = 20
+          FAILS_TO_DOWN = 2
+
+          if not API:
+              print('::error::Set the repository variable API_URL to the API address')
+              sys.exit(1)
+
+
+          def get(url):
+              try:
+                  request = urllib.request.Request(url, headers={'User-Agent': 'lights-out-status-check'})
+                  with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
+                      return response.status, response.read(65536)
+              except urllib.error.HTTPError as error:
+                  return error.code, b''
+              except Exception:
+                  return 0, b''
+
+
+          def status_ok(url):
+              code, body = get(url)
+              if code != 200:
+                  return False
+              try:
+                  return json.loads(body).get('status') == 'ok'
+              except Exception:
+                  return False
+
+
+          CHECKS = {
+              'frontend': ('Frontend', lambda: get(FRONTEND)[0] == 200),
+              'api': ('API', lambda: status_ok(API + '/health')),
+              'database': ('Database', lambda: status_ok(API + '/health/database')),
+              'cloudflare': ('Cloudflare', lambda: get(CLOUDFLARE)[0] == 200),
+          }
+
+
+          def read(name, default):
+              try:
+                  with open(os.path.join(OUT, name), encoding='utf-8') as handle:
+                      return json.load(handle)
+              except Exception:
+                  return default
+
+
+          def write(name, data):
+              with open(os.path.join(OUT, name), 'w', encoding='utf-8', newline='\n') as handle:
+                  json.dump(data, handle, indent=2, sort_keys=True)
+                  handle.write('\n')
+
+
+          state = read('state.json', {})
+
+          for key, (label, check) in CHECKS.items():
+              previous = state.get(key, {'fails': 0, 'up': True})
+              if check():
+                  current = {'fails': 0, 'up': True}
+              else:
+                  fails = min(previous['fails'] + 1, FAILS_TO_DOWN)
+                  # A service is shown as down only after enough failed checks in a row
+                  current = {'fails': fails, 'up': previous['up'] if fails < FAILS_TO_DOWN else False}
+              state[key] = current
+              print(f"{label}: {'up' if current['up'] else 'down'} (failed checks in a row: {current['fails']})")
+              write(f'{key}.json', {
+                  'schemaVersion': 1,
+                  'label': label,
+                  'message': 'up' if current['up'] else 'down',
+                  'color': 'brightgreen' if current['up'] else 'red',
+              })
+
+          write('state.json', state)
+          PY
+                    python3 /tmp/check.py
+
+                    # GitHub switches scheduled workflows off after 60 days without repository activity,
+                    # so a small commit is made when the last one is more than 30 days old
+                    last=$(git log -1 --format=%ct 2>/dev/null || echo 0)
+                    if [ $(( $(date +%s) - last )) -gt 2592000 ]; then
+                      date -u +%F > heartbeat.txt
+                    fi
+
+                    git add -A
+                    if git diff --cached --quiet; then
+                      echo "No change"
+                      exit 0
+                    fi
+                    git commit -m "Update status"
+                    git push origin status
