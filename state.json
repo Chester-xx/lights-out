@@ -8,7 +8,7 @@
     "up": true
   },
   "database": {
-    "fails": 1,
+    "fails": 0,
     "up": true
   },
   "frontend": {
