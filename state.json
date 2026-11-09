@@ -1,6 +1,6 @@
 {
   "api": {
-    "fails": 0,
+    "fails": 1,
     "up": true
   },
   "cloudflare": {
