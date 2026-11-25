@@ -13,12 +13,7 @@ Report a streetlight or traffic signal that is out in Gauteng, and see what has 
 ![Database](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FChester-xx%2Flights-out%2Fstatus%2Fdatabase.json&cacheSeconds=300)
 ![Cloudflare](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FChester-xx%2Flights-out%2Fstatus%2Fcloudflare.json&cacheSeconds=300)
 
-| Badge | What it checks |
-|-------|----------------|
-| Frontend | The website itself, lightsout.org.za |
-| API | The service that receives and lists reports |
-| Database | The storage behind that service |
-| Cloudflare | The bot check that stops automated spam on the report form |
+These badges show whether each part of Lights Out is working. They are checked every 15 minutes.
 
 > **Not for emergencies.** If a fault is causing immediate danger, call the police on 10111, or 112 from a mobile phone.
 
@@ -36,12 +31,12 @@ A dark street or a dead traffic signal is a safety risk, and it is rarely clear 
 
 Every report starts as **Submitted**. Moderators move it forward, and the map shows the current stage.
 
-| Stage | Meaning |
-|-------|---------|
-| Submitted | Your report is received and shown on the map. |
-| Acknowledged | A moderator has seen it. |
-| In progress | A moderator has marked it as being worked on. |
-| Resolved | A moderator has marked the fault as fixed. |
+| Stage        | Meaning                                       |
+| ------------ | --------------------------------------------- |
+| Submitted    | Your report is received and shown on the map. |
+| Acknowledged | A moderator has seen it.                      |
+| In progress  | A moderator has marked it as being worked on. |
+| Resolved     | A moderator has marked the fault as fixed.    |
 
 Lights Out is run independently. It is not connected to any municipality, utility or government body, and reports are not passed on to anyone today. Passing reports on to the relevant authorities automatically is planned for the future.
 
